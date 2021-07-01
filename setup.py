@@ -1,6 +1,20 @@
 import os
 import platform
 import setuptools
+from distutils import sysconfig
+from distutils.core import setup
+import platform
+
+if platform.system() != 'Windows':  # When compilinig con visual no -g is added to params
+    cflags = sysconfig.get_config_var('CFLAGS')
+    opt = sysconfig.get_config_var('OPT')
+    sysconfig._config_vars['CFLAGS'] = cflags.replace(' -g ', ' ')
+    sysconfig._config_vars['OPT'] = opt.replace(' -g ', ' ')
+
+if platform.system() == 'Linux':  # In macos there seems not to be -g in LDSHARED
+    ldshared = sysconfig.get_config_var('LDSHARED')
+    sysconfig._config_vars['LDSHARED'] = ldshared.replace(' -g ', ' ')
+
 
 
 # # --- Detect if extensions should be disabled ------------------------------
